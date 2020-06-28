@@ -11,12 +11,15 @@ example_df <- data.frame(
   rating = c(3, 1, 2, 4, 5, 4)
 )
 
-# Datensatz als Spark Tabelle in R wrappen
-train_tbl <- sdf_copy_to(sc, example_df)
-test_tbl <- sdf_copy_to(sc, example_df)
+train_df <- example_df
+test_df <- example_df
 
-# Ausführen des ALS Algorithmus zum Trainieren eines Modelles
+# Datensatz als Spark Tabelle in R wrappen
+train_tbl <- sdf_copy_to(sc, train_df)
+test_tbl <- sdf_copy_to(sc, test_df)
+
+# Ausfuehren des ALS Algorithmus zum Trainieren eines Modelles
 model <- ml_als(train_tbl, rating ~ user + item)
 
 # Vorhersage anhand des Modelles
-ml_predict(model, test_tbl)
+predictions_df <- data.frame(ml_predict(model, test_tbl))
