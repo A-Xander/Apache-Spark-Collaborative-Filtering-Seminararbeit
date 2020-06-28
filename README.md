@@ -1,3 +1,3 @@
 # Apache-Spark-Collaborative-Filtering Seminararbeit
 
-Dieses Repository ist als Teil einer studentischen Seminararbeit zu Apache Spark Collaborative Filtering mit R entstanden.
+Dieses Repository enthält die praktischen Umsetzung von Apache Spark Collaborative Filtering mit R.
