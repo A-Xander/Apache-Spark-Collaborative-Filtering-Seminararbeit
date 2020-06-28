@@ -1,4 +1,5 @@
-# Laden der sparklyr Bibliothek in die R Session
+# Laden der benötigten Bibliotheken in die R Session
+# Gegebenfalls vorher installieren
 library(sparklyr)
 library(caTools)
 
@@ -6,10 +7,11 @@ library(caTools)
 sc <- spark_connect(master = "local")
 
 # Datensatz als R Dataframe abspeichern
-book_ratings_df <- read.delim("Buecherdaten/book_ratings.dat") # Bewertungsmatrix
-items_info_df <- read.csv("Buecherdaten/items_info.csv", TRUE,";") # Informationen
+# Gegebenfalls Pfade anpassen
+book_ratings_df <- read.delim("D:/Downloads/bookdata/book_ratings.dat") # Bewertungsmatrix
+items_info_df <- read.csv("D:/Downloads/bookdata/items_info.csv", TRUE,";") # Informationen
 names(items_info_df)[1] <- "item"
-users_info_df <- read.csv("Buecherdaten/bookdata/users_info.csv", TRUE,";") # Informationen
+users_info_df <- read.csv("D:/Downloads/bookdata/users_info.csv", TRUE,";") # Informationen
 names(users_info_df)[1] <- "user"
 
 # Seed setzen, damit die gleiche Aufteilung wieder verwendet werden kann
@@ -30,6 +32,6 @@ model <- ml_als(train_tbl, rating ~ user + item)
 # Vorhersage anhand des Modelles
 predictions_df <- data.frame(ml_predict(model, test_tbl))
 
-# Einfï¿½gen der Informationen aus dem Nutzer und Bï¿½cher Datensatz
+# Einfuegen der Informationen aus dem Nutzer und Buecher Datensatz
 predictions_info_df <- merge(predictions_df, users_info_df,  by.predictions_df = "user", by.users_info_df = 'user')
 predictions_info_df <- merge(predictions_info_df, items_info_df,  predictions_info_df = "item", items_info_df = 'item')
