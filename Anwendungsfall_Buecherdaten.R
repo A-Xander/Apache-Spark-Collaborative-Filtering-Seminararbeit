@@ -20,6 +20,7 @@ users_info_df <- read.csv("D:/Downloads/bookdata/users_info.csv", TRUE,";") # In
 names(users_info_df)[1] <- "user"
 
 # Seed setzen, damit die gleiche Aufteilung wieder verwendet werden kann
+# 101
 set.seed(101) 
 
 # Aufteilung in Training- und Testdaten
@@ -31,8 +32,17 @@ test_df  = subset(book_ratings_df, sample == FALSE)
 train_tbl <- sdf_copy_to(sc, train_df)
 test_tbl <- sdf_copy_to(sc, test_df)
 
+# Schleife um mittlere qudaratische Abweichungen in einem Vektor zu speichern
+# Schleife kann benutzt werden, um die Parameter rank, reg_param und max_iter durchzulaufen
+# Gegebenfalls dauert die Berechnung paar Minuten
+# Schleife ist auf Parameter Rank 1 bis 20 eingestellt
+nan_counts <- data.frame("value")
+rmses <- data.frame("value")
+n <- 20 # Endwert der Schleife an Parameter anpassen
+for(i in 1:n) {
+  
 # Ausfuehren des ALS Algorithmus mit den Trainingsdaten
-model <- ml_als(train_tbl, rating ~ user + item)
+model <- ml_als(train_tbl, rating ~ user + item, rank = i, reg_param = 0.1, max_iter = 10,) # i bei Parameter für Schleife setzen
 
 # Vorhersage für Testdaten anhand des Modelles
 predictions_df <- data.frame(ml_predict(model, test_tbl))
@@ -46,6 +56,12 @@ predictions_df <- predictions_df[predictions_df$prediction != "NaN", ]
 # Mittlere quadratische Abweichung
 # 3. Spalte entspricht wahrer Bewertung, 6. Spalte entspricht Vorhersagewert
 rmse <- RMSE(predictions_df[ ,3], predictions_df[ ,6])
+
+#nan_counts <- c(nan_counts, nan_count)
+#rmses <- c(rmses, rmse)
+nan_counts <- rbind(nan_counts, nan_count)
+rmses <- rbind(rmses, rmse)
+}
 
 # Einfuegen der Informationen aus dem Nutzer und Buecher Datensatz
 predictions_info_df <- merge(predictions_df, users_info_df,  by.predictions_df = "user", by.users_info_df = 'user')
