@@ -29,8 +29,8 @@ train_df = subset(book_ratings_df, sample == TRUE)
 test_df  = subset(book_ratings_df, sample == FALSE)
 
 # Datensatz als Spark Tabelle in R wrappen
-train_tbl <- sdf_copy_to(sc, train_df)
-test_tbl <- sdf_copy_to(sc, test_df)
+train_tbl <- sdf_copy_to(sc, train_df, overwrite = TRUE)
+test_tbl <- sdf_copy_to(sc, test_df, overwrite = TRUE)
 
 # Schleife um mittlere qudaratische Abweichungen in einem Vektor zu speichern
 # Schleife kann benutzt werden, um die Parameter rank, reg_param und max_iter durchzulaufen
