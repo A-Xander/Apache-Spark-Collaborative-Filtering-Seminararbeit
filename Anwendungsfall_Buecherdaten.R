@@ -41,8 +41,9 @@ test_tbl <- sdf_copy_to(sc, test_df, overwrite = TRUE)
 # Schleife ist auf Parameter Rank 1 bis 20 eingestellt
 nan_counts <- data.frame("value")
 rmses <- data.frame("value")
+s <- 1 # Schrittgröße der Schleife an Parameter anpassen
 n <- 20 # Endwert der Schleife an Parameter anpassen
-for(i in 1:n) {
+for(i in s:n) {
   
 # Ausfuehren des ALS Algorithmus mit den Trainingsdaten
 # Einstellbar über die einzelnen Parameter
