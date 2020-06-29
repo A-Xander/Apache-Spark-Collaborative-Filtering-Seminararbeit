@@ -1,3 +1,6 @@
+# Apache Spark Collaborative Filtering mit R
+# Beispieldatensatz sind Bücher Bewertungen
+
 # Laden der benötigten Bibliotheken in die R Session
 # Gegebenfalls Bibliotheken vorher installieren
 library(sparklyr)
@@ -42,24 +45,25 @@ n <- 20 # Endwert der Schleife an Parameter anpassen
 for(i in 1:n) {
   
 # Ausfuehren des ALS Algorithmus mit den Trainingsdaten
+# Einstellbar über die einzelnen Parameter
 model <- ml_als(train_tbl, rating ~ user + item, rank = i, reg_param = 0.1, max_iter = 10,) # i bei Parameter für Schleife setzen
 
 # Vorhersage für Testdaten anhand des Modelles
 predictions_df <- data.frame(ml_predict(model, test_tbl))
 
-# Anzahl NaN Vorhersagen
+# Anzahl der fehlgeschlagenen Vorhersagen
 nan_count <- sum(predictions_df$prediction == "NaN")
 
-# Entfernung der NaN Vorhersage Zeilen
+# Entfernung der fehlgeschlagenen Vorhersagen aus dem Ergebnis
 predictions_df <- predictions_df[predictions_df$prediction != "NaN", ]
 
-# Mittlere quadratische Abweichung
+# Berechnung der mittlere quadratischen Abweichung
 # 3. Spalte entspricht wahrer Bewertung, 6. Spalte entspricht Vorhersagewert
 rmse <- RMSE(predictions_df[ ,3], predictions_df[ ,6])
 
-#nan_counts <- c(nan_counts, nan_count)
-#rmses <- c(rmses, rmse)
+# Anzahl der fehlgeschlagenen Vorhersagen in Vektor speichern
 nan_counts <- rbind(nan_counts, nan_count)
+# Mittlere quadratischen Abweichung in Vektor speichern
 rmses <- rbind(rmses, rmse)
 }
 
