@@ -47,7 +47,7 @@ for(i in s:n) {
   
 # Ausfuehren des ALS Algorithmus mit den Trainingsdaten
 # Einstellbar über die einzelnen Parameter
-model <- ml_als(train_tbl, rating ~ user + item, rank = i, reg_param = 0.1, max_iter = 10,) # i bei Parameter für Schleife setzen
+model <- ml_als(train_tbl, rating ~ user + item, rank = i, reg_param = 0.1, max_iter = 10) # i bei Parameter für Schleife setzen
 
 # Vorhersage für Testdaten anhand des Modelles
 predictions_df <- data.frame(ml_predict(model, test_tbl))
